@@ -1,0 +1,691 @@
+ 
+key2label = 
+{0: 'neptune', 1: 'satan', 2: 'nmap', 3: 'portsweep', 4: 'back', 5: 'warezclient', 6: 'guess_passwd', 7: 'normal', 8: 'rootkit', 9: 'perl', 10: 'buffer_overflow', 11: 'multihop', 
+12: 'ipsweep', 13: 'warezmaster', 14: 'imap', 15: 'teardrop', 16: 'spy', 17: 'land', 18: 'pod', 19: 'ftp_write', 20: 'smurf', 21: 'loadmodule', 22: 'phf'}
+
+
+
+
+========
+Distribution of the labels
++---------------+---------+------+
+|          label|label_key| count|
++---------------+---------+------+
+|          smurf|     20.0|280790|
+|        neptune|      0.0|107201|
+|         normal|      7.0| 97278|
+|           back|      4.0|  2203|
+|          satan|      1.0|  1589|
+|        ipsweep|     12.0|  1247|
+|      portsweep|      3.0|  1040|
+|    warezclient|      5.0|  1020|
+|       teardrop|     15.0|   979|
+|            pod|     18.0|   264|
+|           nmap|      2.0|   231|
+|   guess_passwd|      6.0|    53|
+|buffer_overflow|     10.0|    30|
+|           land|     17.0|    21|
+|    warezmaster|     13.0|    20|
+|           imap|     14.0|    12|
+|        rootkit|      8.0|    10|
+|     loadmodule|     21.0|     9|
+|      ftp_write|     19.0|     8|
+|       multihop|     11.0|     7|
+|            phf|     22.0|     4|
+|           perl|      9.0|     3|
+|            spy|     16.0|     2|
++---------------+---------+------+
+
+
+
+For k = 2: 
+The dominant class of connection types in this dataset is the intrusion attack, 'smurf'. In the clustering of 
+the training set, KMeans recognizes 2 groups of connection types, one containing most of the classes, including
+the normal and the anomalous connections and the other, two types of connections,'portsweep' intrusion
+and 'neptune' . The model is dominated by the chatracteristics of 'smurf' and cannot detect a normal connection.
+Though it is capable of recognising differences between some types of connection, such as 'neptune', it is not 
+capable of recognizing the majority of connections from these classes.
+Therefore, the model is not able to detect if a connection is anomalous versous normal, as it tends to characterize
+most connections as anomalous.
+
+
+
+k = 2
+====================
+Train:
+|prediction|label_dist                                                                                                                                                                                                                                                                               |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|0         |[[20.0, 252787], [0.0, 96533], [7.0, 87653], [4.0, 2005], [1.0, 1428], [12.0, 1136], [3.0, 940], [5.0, 922], [15.0, 884], [18.0, 236], [2.0, 213], [6.0, 50], [10.0, 29], [17.0, 20], [13.0, 19], [14.0, 12], [8.0, 10], [21.0, 9], [11.0, 7], [19.0, 7], [22.0, 4], [9.0, 3], [16.0, 2]]|
+|1         |[[0.0, 99], [3.0, 2]]                                                                                                                                                                                                                                                                    |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+                                                                                                                                                                                                                                                            |
+
+Test:
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|prediction|label_dist                                                                                                                                                                                    |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|0         |[[20.0, 28003], [0.0, 10561], [7.0, 9625], [4.0, 198], [1.0, 161], [12.0, 110], [3.0, 98], [5.0, 98], [15.0, 95], [18.0, 28], [2.0, 18], [6.0, 3], [13.0, 1], [10.0, 1], [17.0, 1], [19.0, 1]]|
+|1         |[[0.0, 8], [12.0, 1]]                                                                                                                                                                         |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
+KMeans forms a clustering of instances based on the affinity of their feature vectors, this may end up to be a 
+close clustering of the instances based on the classes the instances belong to or not. In any case, the 
+classification of the instances into the clusters reveals some insights about the feature space selected and 
+used as a reference, about common latent characteristics that the instances possibly have with one another and
+other useful insights on their relationships that in order to be further discovered, another processing technique 
+is required to be used in addition or a comperative study between techniques should be carried out for further 
+analysis. For example, we recognize the importance of an interpretability method to be always used along with 
+KMeans, in order to cast light at the latent similarity patterns that connect features classified to the same or
+different clusters. The results of this analysis may also show us the way to more effient ways for detecting the
+class in which an instance belongs to, based on fewer features or more transparent detectors, which don't require
+a big volume of data for detecting an event.
+In addition, we share the view that for the right classification of instances, by the nature of the classification
+task, there is not a crystal clear way of how to classify one thing to a class and not to another, as most things 
+exhibit blended characteristics. Though, it is evident that against a specific class, such as the event of an 
+intrusion, an instance is clearly classified as an intrusion or not.
+
+Trying KMeans with k = 23, we observe that the biggest cluster includes for the most part 'smurf' connections,
+which is the class the algorithm knows most about.
+There are definitely three quite big clusters that represent the 'smurf', 'normal' and 'neptune' connections, 
+which are the three most populated classes in the dataset.
+Most of the connections, apart from the most dominant one, 'smurf', present some distribution across all clusters
+whith a rate that appears to be inversely analogous to their size. 'normal' connections appear in 12 out of the 23
+clusters and co-occure with instances from any other class, which might be indicative of the fact that intrusion
+connections use most of the means that normal connections use and may disguise, to some extent, the way normal 
+connections look like.
+"neptune", a larger class than 'normal', appears in 14 out of 23 clusters and, too, co-occurs with instances from 
+any other class, but in the clusters to which it dominates, it shows a specific pattern of relevance with the instances
+coming from the other classes. Often forms isolated clusters, with one or two specific classes of intrusions only,
+specially with 'portsweep' connections.
+Also, in the clustering been formed, there is a specific cluster dedicated to 'warezmaster' type of connection, 
+composed of 14/20 instances of the class.
+
+The test set, which is composed of 49011 instances, following similar distribution between the classes as in the
+training set (however some connection types don't appear in the test set, such as 21, 22), bears quite similar 
+characteristics in its clustering, as those of the training set's clustering. 
+Though the most populated classes are now 28003 ('smurf'), 10569 ('neptune') and 9625 ('normal'), we again observe 
+the emergence of three big clusters corresponding to the three dominant classes of the dataset. The 'normal' 
+connections co-occuring with many other types of connections and 'neptune' coonections forming isolated clusters 
+with some intrusion types of connections.   
+
+
+k = 23
+====================
+
+Train:
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|prediction|label_dist                                                                                                                                                                 |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|0         |[[0.0, 77286], [1.0, 153], [2.0, 96], [3.0, 25], [7.0, 7], [14.0, 6], [17.0, 5], [6.0, 1]]                                                                                 |
+|1         |[[20.0, 252787], [7.0, 1063], [18.0, 140], [12.0, 3], [1.0, 2], [3.0, 1], [2.0, 1]]                                                                                        |
+|2         |[[0.0, 99], [3.0, 1]]                                                                                                                                                      |
+|3         |[[0.0, 81], [3.0, 1]]                                                                                                                                                      |
+|4         |[[0.0, 92]]                                                                                                                                                                |
+|5         |[[7.0, 3457], [5.0, 642], [0.0, 136], [10.0, 23], [3.0, 8], [19.0, 4], [22.0, 4], [12.0, 3], [11.0, 3], [13.0, 3], [8.0, 3], [21.0, 3], [16.0, 1]]                         |
+|6         |[[7.0, 8656], [0.0, 12], [1.0, 2], [3.0, 2], [12.0, 1]]                                                                                                                    |
+|7         |[[0.0, 103], [12.0, 2], [3.0, 1]]                                                                                                                                          |
+|8         |[[7.0, 17299], [15.0, 884], [1.0, 151], [3.0, 25], [2.0, 22], [18.0, 17], [12.0, 3], [8.0, 3], [5.0, 2]]                                                                   |
+|9         |[[7.0, 15], [4.0, 4], [1.0, 1], [5.0, 1]]                                                                                                                                  |
+|10        |[[3.0, 1]]                                                                                                                                                                 |
+|11        |[[0.0, 91]]                                                                                                                                                                |
+|12        |[[0.0, 89], [3.0, 2], [1.0, 1]]                                                                                                                                            |
+|13        |[[0.0, 91]]                                                                                                                                                                |
+|14        |[[7.0, 332], [5.0, 275], [19.0, 2], [11.0, 2], [6.0, 1], [13.0, 1]]                                                                                                        |
+|15        |[[7.0, 51974], [4.0, 1996], [12.0, 1050], [2.0, 93], [18.0, 79], [17.0, 15], [1.0, 7], [10.0, 6], [14.0, 6], [8.0, 4], [21.0, 4], [5.0, 2], [6.0, 1], [16.0, 1], [19.0, 1]]|
+|16        |[[0.0, 87], [3.0, 3]]                                                                                                                                                      |
+|17        |[[0.0, 86], [2.0, 1]]                                                                                                                                                      |
+|18        |[[7.0, 8], [1.0, 2]]                                                                                                                                                       |
+|19        |[[0.0, 94], [3.0, 1]]                                                                                                                                                      |
+|20        |[[7.0, 13], [9.0, 3], [11.0, 2], [21.0, 2], [13.0, 1]]                                                                                                                     |
+|21        |[[13.0, 14], [7.0, 9]]                                                                                                                                                     |
+|22        |[[0.0, 18285], [7.0, 4820], [1.0, 1109], [3.0, 871], [12.0, 74], [6.0, 47], [4.0, 5]]                                                                                      |
++----------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+
+
+Test:
++----------+----------------------------------------------------------------------------------+
+|prediction|label_dist                                                                        |
++----------+----------------------------------------------------------------------------------+
+|0         |[[0.0, 8482], [1.0, 19], [2.0, 6], [3.0, 2], [7.0, 1]]                            |
+|1         |[[20.0, 28003], [7.0, 116], [18.0, 17], [12.0, 1]]                                |
+|2         |[[0.0, 12]]                                                                       |
+|3         |[[0.0, 10]]                                                                       |
+|4         |[[0.0, 9]]                                                                        |
+|5         |[[7.0, 357], [5.0, 65], [0.0, 18], [10.0, 1]]                                     |
+|6         |[[7.0, 940], [0.0, 2]]                                                            |
+|7         |[[0.0, 5]]                                                                        |
+|8         |[[7.0, 1898], [15.0, 95], [1.0, 20], [3.0, 3], [2.0, 3], [5.0, 1]]                |
+|9         |[[7.0, 2], [4.0, 1]]                                                              |
+|11        |[[0.0, 8]]                                                                        |
+|12        |[[0.0, 12], [3.0, 2]]                                                             |
+|13        |[[0.0, 7]]                                                                        |
+|14        |[[7.0, 39], [5.0, 32]]                                                            |
+|15        |[[7.0, 5708], [4.0, 196], [12.0, 103], [18.0, 11], [2.0, 9], [17.0, 1], [19.0, 1]]|
+|16        |[[0.0, 14], [3.0, 1]]                                                             |
+|17        |[[0.0, 10]]                                                                       |
+|18        |[[7.0, 1]]                                                                        |
+|19        |[[0.0, 11]]                                                                       |
+|21        |[[13.0, 1]]                                                                       |
+|22        |[[0.0, 1969], [7.0, 563], [1.0, 122], [3.0, 90], [12.0, 7], [6.0, 3], [4.0, 1]]   |
++----------+----------------------------------------------------------------------------------+
+
+
+As k increases and the quality of the clustering remains good (based on the silhouette metric), the KMeans clustering
+tends to 'magnify' the strength of the bonds that connect the different instances together, based on their features.
+It is interesting to observe that from the three dominant classes only 'normal' exhibits the most profound dispersion
+across the clusters formed, whereas the other dominant classes, such as 'smurf' and 'neptune' stay almost intact in 
+their representing cluster's cardinality. This being observed both for the train and the test set and across the different
+values of k, depicts that the features' selection characterizes well 'smurf' type of connections and secondly 'neptune' 
+connections. 
+In this case too (k = 100), 'normal' connections appear in almost half of the clusters (53/100) and co-occure with any
+other class in the dataset, reinforcing the observation that most of the intrusion connections bear common characteristics
+with those of normal connections. 'neptune' as well appeares in half of the clusters formed (49/100), though the majority
+of the 'neptune' instances is kept within one representative cluster.
+ 
+
+k = 100
+====================
+
+Train:
+
++----------+-----------------------------------------------------------------------------------------------------------------+
+|prediction|label_dist                                                                                                       |
++----------+-----------------------------------------------------------------------------------------------------------------+
+|0         |[[0.0, 74313], [3.0, 13]]                                                                                        |
+|1         |[[20.0, 252787], [7.0, 311], [18.0, 147], [12.0, 3], [3.0, 1], [2.0, 1]]                                         |
+|2         |[[7.0, 1062], [18.0, 76], [12.0, 54]]                                                                            |
+|3         |[[7.0, 5195], [1.0, 1]]                                                                                          |
+|4         |[[7.0, 1]]                                                                                                       |
+|5         |[[0.0, 17632], [3.0, 46], [12.0, 13], [7.0, 1]]                                                                  |
+|6         |[[3.0, 1]]                                                                                                       |
+|7         |[[7.0, 3]]                                                                                                       |
+|8         |[[3.0, 634], [4.0, 85], [7.0, 1], [5.0, 1]]                                                                      |
+|9         |[[7.0, 8287], [0.0, 13], [1.0, 1], [12.0, 1]]                                                                    |
+|10        |[[0.0, 94], [3.0, 1]]                                                                                            |
+|11        |[[0.0, 90], [12.0, 1]]                                                                                           |
+|12        |[[0.0, 98], [3.0, 2]]                                                                                            |
+|13        |[[0.0, 101], [12.0, 3], [3.0, 1], [1.0, 1]]                                                                      |
+|14        |[[7.0, 3331], [5.0, 637], [0.0, 136], [10.0, 6], [19.0, 4], [12.0, 3], [13.0, 3], [11.0, 3], [21.0, 1], [8.0, 1]]|
+|15        |[[7.0, 393]]                                                                                                     |
+|16        |[[0.0, 88]]                                                                                                      |
+|17        |[[7.0, 484], [1.0, 1]]                                                                                           |
+|18        |[[1.0, 1250], [3.0, 146]]                                                                                        |
+|19        |[[0.0, 96]]                                                                                                      |
+|20        |[[10.0, 17], [7.0, 13], [22.0, 4], [9.0, 3], [8.0, 2], [11.0, 1], [21.0, 1]]                                     |
+|21        |[[7.0, 7], [6.0, 2], [5.0, 1]]                                                                                   |
+|22        |[[17.0, 20], [7.0, 1]]                                                                                           |
+|23        |[[7.0, 10], [13.0, 1]]                                                                                           |
+|24        |[[0.0, 91], [3.0, 1]]                                                                                            |
+|25        |[[0.0, 18], [3.0, 1]]                                                                                            |
+|26        |[[7.0, 23633], [4.0, 1528], [8.0, 1]]                                                                            |
+|27        |[[3.0, 11]]                                                                                                      |
+|28        |[[0.0, 89], [12.0, 2], [3.0, 1]]                                                                                 |
+|29        |[[0.0, 87], [3.0, 3]]                                                                                            |
+|30        |[[7.0, 540]]                                                                                                     |
+|31        |[[12.0, 1046], [7.0, 353], [2.0, 93], [1.0, 2]]                                                                  |
+|32        |[[7.0, 1034], [1.0, 10]]                                                                                         |
+|33        |[[0.0, 91]]                                                                                                      |
+|34        |[[3.0, 7], [7.0, 1]]                                                                                             |
+|35        |[[7.0, 201], [0.0, 99]]                                                                                          |
+|36        |[[0.0, 95], [3.0, 2]]                                                                                            |
+|37        |[[0.0, 96]]                                                                                                      |
+|38        |[[0.0, 96], [1.0, 1]]                                                                                            |
+|39        |[[0.0, 100], [7.0, 1]]                                                                                           |
+|40        |[[7.0, 15], [4.0, 4], [1.0, 1], [5.0, 1]]                                                                        |
+|41        |[[0.0, 16]]                                                                                                      |
+|42        |[[7.0, 1]]                                                                                                       |
+|43        |[[0.0, 86], [2.0, 1]]                                                                                            |
+|44        |[[0.0, 92], [3.0, 1], [1.0, 1]]                                                                                  |
+|45        |[[0.0, 81]]                                                                                                      |
+|46        |[[0.0, 111], [3.0, 3]]                                                                                           |
+|47        |[[0.0, 105], [7.0, 69], [3.0, 2], [1.0, 1]]                                                                      |
+|48        |[[18.0, 5], [7.0, 2]]                                                                                            |
+|49        |[[7.0, 1108], [1.0, 13], [8.0, 3], [5.0, 2]]                                                                     |
+|50        |[[0.0, 95], [3.0, 1]]                                                                                            |
+|51        |[[0.0, 100]]                                                                                                     |
+|52        |[[7.0, 4]]                                                                                                       |
+|53        |[[0.0, 91]]                                                                                                      |
+|54        |[[0.0, 103], [12.0, 2], [3.0, 1]]                                                                                |
+|55        |[[2.0, 96], [14.0, 4]]                                                                                           |
+|56        |[[15.0, 876]]                                                                                                    |
+|57        |[[7.0, 5], [16.0, 1]]                                                                                            |
+|58        |[[7.0, 468], [0.0, 47], [1.0, 9], [3.0, 5], [5.0, 4], [4.0, 3], [21.0, 1]]                                       |
+|59        |[[0.0, 81], [3.0, 1]]                                                                                            |
+|60        |[[7.0, 1]]                                                                                                       |
+|61        |[[7.0, 2]]                                                                                                       |
+|62        |[[7.0, 43], [4.0, 2], [14.0, 1]]                                                                                 |
+|63        |[[0.0, 98], [1.0, 1]]                                                                                            |
+|64        |[[0.0, 94], [3.0, 1], [7.0, 1], [12.0, 1]]                                                                       |
+|65        |[[5.0, 256], [7.0, 90]]                                                                                          |
+|66        |[[0.0, 104], [1.0, 1]]                                                                                           |
+|67        |[[1.0, 1]]                                                                                                       |
+|68        |[[3.0, 42], [7.0, 2]]                                                                                            |
+|69        |[[7.0, 6545], [1.0, 123], [2.0, 22], [15.0, 8]]                                                                  |
+|70        |[[0.0, 89], [3.0, 2], [1.0, 1]]                                                                                  |
+|71        |[[0.0, 95], [12.0, 2]]                                                                                           |
+|72        |[[0.0, 93], [3.0, 1]]                                                                                            |
+|73        |[[0.0, 91], [19.0, 1]]                                                                                           |
+|74        |[[6.0, 46], [7.0, 7], [8.0, 1]]                                                                                  |
+|75        |[[7.0, 37], [21.0, 2], [11.0, 1]]                                                                                |
+|76        |[[13.0, 14], [7.0, 2]]                                                                                           |
+|77        |[[7.0, 2425], [5.0, 1]]                                                                                          |
+|78        |[[7.0, 1], [6.0, 1]]                                                                                             |
+|79        |[[0.0, 94]]                                                                                                      |
+|80        |[[0.0, 99], [3.0, 2]]                                                                                            |
+|81        |[[0.0, 89], [7.0, 46], [12.0, 2]]                                                                                |
+|82        |[[0.0, 96], [3.0, 1]]                                                                                            |
+|83        |[[0.0, 81]]                                                                                                      |
+|84        |[[0.0, 91], [14.0, 7]]                                                                                           |
+|85        |[[0.0, 92]]                                                                                                      |
+|86        |[[0.0, 91]]                                                                                                      |
+|87        |[[0.0, 95], [3.0, 1]]                                                                                            |
+|88        |[[0.0, 81], [3.0, 2], [1.0, 1]]                                                                                  |
+|89        |[[7.0, 339]]                                                                                                     |
+|90        |[[7.0, 3724]]                                                                                                    |
+|91        |[[0.0, 92], [3.0, 2], [1.0, 1]]                                                                                  |
+|92        |[[7.0, 241], [5.0, 19], [19.0, 2], [11.0, 2], [13.0, 1]]                                                         |
+|93        |[[7.0, 36], [1.0, 1]]                                                                                            |
+|94        |[[7.0, 422], [0.0, 162], [1.0, 3], [12.0, 1]]                                                                    |
+|95        |[[0.0, 92], [3.0, 1]]                                                                                            |
+|96        |[[7.0, 8], [1.0, 2]]                                                                                             |
+|97        |[[7.0, 13]]                                                                                                      |
+|98        |[[7.0, 26961], [4.0, 383], [18.0, 8], [10.0, 1], [21.0, 1], [12.0, 1]]                                           |
+|99        |[[0.0, 182], [7.0, 172], [10.0, 5], [21.0, 3], [8.0, 2], [3.0, 2], [1.0, 1], [12.0, 1], [16.0, 1], [6.0, 1]]     |
++----------+-----------------------------------------------------------------------------------------------------------------+
+
+
+Test:
++----------+-------------------------------------------------+
+|prediction|label_dist                                       |
++----------+-------------------------------------------------+
+|0         |[[0.0, 8166], [3.0, 2]]                          |
+|1         |[[20.0, 28003], [7.0, 34], [18.0, 17], [12.0, 1]]|
+|2         |[[7.0, 143], [18.0, 9], [12.0, 5]]               |
+|3         |[[7.0, 596]]                                     |
+|5         |[[0.0, 1892], [3.0, 3], [12.0, 1]]               |
+|8         |[[3.0, 63], [4.0, 6]]                            |
+|9         |[[7.0, 907], [0.0, 2]]                           |
+|10        |[[0.0, 11]]                                      |
+|11        |[[0.0, 7]]                                       |
+|12        |[[0.0, 15]]                                      |
+|13        |[[0.0, 11]]                                      |
+|14        |[[7.0, 342], [5.0, 65], [0.0, 18]]               |
+|15        |[[7.0, 42]]                                      |
+|16        |[[0.0, 14], [3.0, 1]]                            |
+|17        |[[7.0, 53]]                                      |
+|18        |[[1.0, 141], [3.0, 16]]                          |
+|19        |[[0.0, 10]]                                      |
+|20        |[[7.0, 3], [10.0, 1]]                            |
+|22        |[[17.0, 1]]                                      |
+|24        |[[0.0, 10]]                                      |
+|25        |[[0.0, 4]]                                       |
+|26        |[[7.0, 2643], [4.0, 135]]                        |
+|28        |[[0.0, 10]]                                      |
+|29        |[[0.0, 14], [3.0, 1]]                            |
+|30        |[[7.0, 52]]                                      |
+|31        |[[12.0, 103], [7.0, 36], [2.0, 9]]               |
+|32        |[[7.0, 99], [1.0, 1]]                            |
+|33        |[[0.0, 8]]                                       |
+|35        |[[7.0, 19], [0.0, 9]]                            |
+|36        |[[0.0, 12]]                                      |
+|37        |[[0.0, 10]]                                      |
+|38        |[[0.0, 8], [3.0, 1]]                             |
+|39        |[[0.0, 11]]                                      |
+|40        |[[7.0, 2], [4.0, 1]]                             |
+|41        |[[0.0, 3]]                                       |
+|43        |[[0.0, 10]]                                      |
+|44        |[[0.0, 10]]                                      |
+|45        |[[0.0, 18]]                                      |
+|46        |[[0.0, 12]]                                      |
+|47        |[[0.0, 13], [7.0, 8]]                            |
+|49        |[[7.0, 128], [1.0, 3]]                           |
+|50        |[[0.0, 11]]                                      |
+|51        |[[0.0, 5]]                                       |
+|53        |[[0.0, 7]]                                       |
+|54        |[[0.0, 5]]                                       |
+|55        |[[2.0, 6]]                                       |
+|56        |[[15.0, 94]]                                     |
+|58        |[[7.0, 41], [0.0, 5], [3.0, 2], [1.0, 1]]        |
+|59        |[[0.0, 10]]                                      |
+|62        |[[7.0, 7]]                                       |
+|63        |[[0.0, 8]]                                       |
+|64        |[[0.0, 8]]                                       |
+|65        |[[5.0, 32], [7.0, 11]]                           |
+|66        |[[0.0, 11]]                                      |
+|68        |[[3.0, 7]]                                       |
+|69        |[[7.0, 743], [1.0, 15], [2.0, 3], [15.0, 1]]     |
+|70        |[[0.0, 12], [3.0, 2]]                            |
+|71        |[[0.0, 10]]                                      |
+|72        |[[0.0, 9]]                                       |
+|73        |[[0.0, 11], [19.0, 1]]                           |
+|74        |[[6.0, 3]]                                       |
+|75        |[[7.0, 6]]                                       |
+|76        |[[13.0, 1]]                                      |
+|77        |[[7.0, 225], [5.0, 1]]                           |
+|79        |[[0.0, 7]]                                       |
+|80        |[[0.0, 8], [12.0, 1]]                            |
+|81        |[[0.0, 14], [7.0, 5]]                            |
+|82        |[[0.0, 11]]                                      |
+|83        |[[0.0, 8]]                                       |
+|84        |[[0.0, 14]]                                      |
+|85        |[[0.0, 9]]                                       |
+|86        |[[0.0, 5]]                                       |
+|87        |[[0.0, 14]]                                      |
+|88        |[[0.0, 11]]                                      |
+|89        |[[7.0, 41]]                                      |
+|90        |[[7.0, 421]]                                     |
+|91        |[[0.0, 12]]                                      |
+|92        |[[7.0, 28]]                                      |
+|93        |[[7.0, 2]]                                       |
+|94        |[[7.0, 43], [0.0, 15]]                           |
+|95        |[[0.0, 6]]                                       |
+|96        |[[7.0, 1]]                                       |
+|97        |[[7.0, 1]]                                       |
+|98        |[[7.0, 2926], [4.0, 56], [18.0, 2]]              |
+|99        |[[7.0, 17], [0.0, 15]]                           |
++----------+-------------------------------------------------+
+
+As k increases to k = 150, it is quite interesting to notice that all of the above observations still hold. The
+'smurf' class gets not dispersed at all. 'normal' tends to occuppy a bit more than half of the total number of
+the clusters (84/100), at the expanse of the 'neptune' instances (69/150), which has started reavealing the fact 
+that 'neptune' and 'normal' connections bear similarities between each other and with the other types of connections, 
+though 'neptune' has a characteristic that keeps its representative cluster retaininig a significant portion of its 
+cartinality. The algorithm, guided by the principle of the euclidean distance, seems to start fragmenting clusters
+where the bonds are week, as k increases.
+In the resultant clustering, some pure paradigms from the other intrusion types, apart from 'smurf' and 'neptune' 
+also start to emerge.
+ 
+
+k = 150
+====================
+Train:
+
++----------+------------------------------------------------------------------------------------------------------------+
+|prediction|label_dist                                                                                                  |
++----------+------------------------------------------------------------------------------------------------------------+
+|0         |[[0.0, 41157]]                                                                                              |
+|1         |[[20.0, 252787], [7.0, 309], [12.0, 3], [3.0, 1], [2.0, 1]]                                                 |
+|2         |[[7.0, 3981], [1.0, 1]]                                                                                     |
+|3         |[[7.0, 1672], [4.0, 55]]                                                                                    |
+|4         |[[7.0, 15363]]                                                                                              |
+|5         |[[0.0, 96], [1.0, 1]]                                                                                       |
+|6         |[[0.0, 17437], [3.0, 36], [12.0, 13]]                                                                       |
+|7         |[[7.0, 901], [1.0, 11]]                                                                                     |
+|8         |[[7.0, 53]]                                                                                                 |
+|9         |[[0.0, 71], [7.0, 46], [12.0, 2]]                                                                           |
+|10        |[[0.0, 102], [12.0, 1], [3.0, 1]]                                                                           |
+|11        |[[0.0, 89], [12.0, 2], [3.0, 1]]                                                                            |
+|12        |[[0.0, 91]]                                                                                                 |
+|13        |[[0.0, 107]]                                                                                                |
+|14        |[[7.0, 339]]                                                                                                |
+|15        |[[7.0, 752], [5.0, 1]]                                                                                      |
+|16        |[[0.0, 91], [14.0, 7]]                                                                                      |
+|17        |[[7.0, 1]]                                                                                                  |
+|18        |[[0.0, 94], [12.0, 1], [7.0, 1], [3.0, 1]]                                                                  |
+|19        |[[18.0, 5], [7.0, 2]]                                                                                       |
+|20        |[[8.0, 1]]                                                                                                  |
+|21        |[[5.0, 244], [7.0, 38]]                                                                                     |
+|22        |[[15.0, 876]]                                                                                               |
+|23        |[[12.0, 749], [2.0, 90], [7.0, 6]]                                                                          |
+|24        |[[0.0, 81], [7.0, 1]]                                                                                       |
+|25        |[[0.0, 92], [3.0, 1]]                                                                                       |
+|26        |[[6.0, 46], [7.0, 4], [8.0, 1]]                                                                             |
+|27        |[[7.0, 43], [4.0, 2], [14.0, 1]]                                                                            |
+|28        |[[0.0, 90], [12.0, 1]]                                                                                      |
+|29        |[[0.0, 93], [3.0, 1]]                                                                                       |
+|30        |[[7.0, 484], [1.0, 1]]                                                                                      |
+|31        |[[7.0, 1]]                                                                                                  |
+|32        |[[7.0, 40], [1.0, 1]]                                                                                       |
+|33        |[[0.0, 87], [3.0, 3]]                                                                                       |
+|34        |[[0.0, 103], [12.0, 2], [3.0, 1]]                                                                           |
+|35        |[[0.0, 96], [3.0, 1]]                                                                                       |
+|36        |[[0.0, 99], [3.0, 1]]                                                                                       |
+|37        |[[0.0, 103], [7.0, 3], [12.0, 1]]                                                                           |
+|38        |[[0.0, 99], [3.0, 2]]                                                                                       |
+|39        |[[3.0, 11]]                                                                                                 |
+|40        |[[7.0, 1]]                                                                                                  |
+|41        |[[3.0, 613]]                                                                                                |
+|42        |[[7.0, 13]]                                                                                                 |
+|43        |[[0.0, 86], [2.0, 1]]                                                                                       |
+|44        |[[0.0, 91]]                                                                                                 |
+|45        |[[0.0, 16], [3.0, 1]]                                                                                       |
+|46        |[[0.0, 111], [3.0, 3]]                                                                                      |
+|47        |[[0.0, 182], [7.0, 148], [10.0, 5], [21.0, 3], [8.0, 2], [3.0, 2], [1.0, 1], [16.0, 1], [6.0, 1], [12.0, 1]]|
+|48        |[[17.0, 20], [7.0, 1]]                                                                                      |
+|49        |[[7.0, 8], [1.0, 2]]                                                                                        |
+|50        |[[0.0, 95], [12.0, 2]]                                                                                      |
+|51        |[[0.0, 78], [3.0, 1], [8.0, 1], [1.0, 1]]                                                                   |
+|52        |[[7.0, 4], [16.0, 1]]                                                                                       |
+|53        |[[0.0, 74]]                                                                                                 |
+|54        |[[0.0, 81], [3.0, 2], [1.0, 1]]                                                                             |
+|55        |[[7.0, 37]]                                                                                                 |
+|56        |[[0.0, 100]]                                                                                                |
+|57        |[[12.0, 52], [7.0, 12]]                                                                                     |
+|58        |[[7.0, 7], [6.0, 2], [5.0, 1]]                                                                              |
+|59        |[[0.0, 88]]                                                                                                 |
+|60        |[[7.0, 2118], [0.0, 4], [1.0, 1]]                                                                           |
+|61        |[[7.0, 6545], [1.0, 122], [2.0, 22], [15.0, 8]]                                                             |
+|62        |[[7.0, 1]]                                                                                                  |
+|63        |[[0.0, 73]]                                                                                                 |
+|64        |[[0.0, 16]]                                                                                                 |
+|65        |[[0.0, 94], [3.0, 1]]                                                                                       |
+|66        |[[3.0, 160], [1.0, 158]]                                                                                    |
+|67        |[[2.0, 96]]                                                                                                 |
+|68        |[[7.0, 230]]                                                                                                |
+|69        |[[7.0, 207], [5.0, 19], [19.0, 2], [11.0, 2], [13.0, 1]]                                                    |
+|70        |[[0.0, 89], [3.0, 2], [1.0, 1]]                                                                             |
+|71        |[[0.0, 81]]                                                                                                 |
+|72        |[[0.0, 92]]                                                                                                 |
+|73        |[[0.0, 78], [3.0, 2]]                                                                                       |
+|74        |[[3.0, 1]]                                                                                                  |
+|75        |[[7.0, 173]]                                                                                                |
+|76        |[[7.0, 22]]                                                                                                 |
+|77        |[[13.0, 14], [7.0, 2]]                                                                                      |
+|78        |[[3.0, 7], [7.0, 1]]                                                                                        |
+|79        |[[0.0, 94]]                                                                                                 |
+|80        |[[0.0, 98], [3.0, 2]]                                                                                       |
+|81        |[[7.0, 6]]                                                                                                  |
+|82        |[[0.0, 89], [7.0, 69], [3.0, 2], [1.0, 1]]                                                                  |
+|83        |[[0.0, 101], [12.0, 3], [3.0, 1], [1.0, 1]]                                                                 |
+|84        |[[0.0, 96]]                                                                                                 |
+|85        |[[0.0, 81], [1.0, 1]]                                                                                       |
+|86        |[[7.0, 277], [1.0, 1], [0.0, 1]]                                                                            |
+|87        |[[0.0, 95], [3.0, 1]]                                                                                       |
+|88        |[[0.0, 150], [7.0, 46], [12.0, 1], [3.0, 1]]                                                                |
+|89        |[[7.0, 2780], [4.0, 304]]                                                                                   |
+|90        |[[7.0, 350]]                                                                                                |
+|91        |[[0.0, 95], [3.0, 1]]                                                                                       |
+|92        |[[7.0, 3678], [0.0, 3]]                                                                                     |
+|93        |[[7.0, 1]]                                                                                                  |
+|94        |[[7.0, 15], [4.0, 4], [5.0, 1], [1.0, 1]]                                                                   |
+|95        |[[0.0, 81], [3.0, 1]]                                                                                       |
+|96        |[[7.0, 18573], [4.0, 1036]]                                                                                 |
+|97        |[[7.0, 2449], [5.0, 117], [10.0, 6], [19.0, 1]]                                                             |
+|98        |[[10.0, 17], [7.0, 13], [22.0, 4], [21.0, 1], [8.0, 1]]                                                     |
+|99        |[[7.0, 697], [0.0, 147], [12.0, 3], [11.0, 2], [13.0, 2]]                                                   |
+|100       |[[1.0, 1]]                                                                                                  |
+|101       |[[7.0, 2361], [0.0, 3], [12.0, 1]]                                                                          |
+|102       |[[7.0, 7], [13.0, 1]]                                                                                       |
+|103       |[[0.0, 91], [3.0, 1]]                                                                                       |
+|104       |[[0.0, 32868], [3.0, 11]]                                                                                   |
+|105       |[[19.0, 1]]                                                                                                 |
+|106       |[[0.0, 92], [3.0, 1], [1.0, 1]]                                                                             |
+|107       |[[7.0, 156], [5.0, 9], [11.0, 1], [19.0, 1]]                                                                |
+|108       |[[1.0, 1094]]                                                                                               |
+|109       |[[7.0, 1049]]                                                                                               |
+|110       |[[18.0, 231], [7.0, 4]]                                                                                     |
+|111       |[[0.0, 98], [1.0, 1]]                                                                                       |
+|112       |[[7.0, 148], [0.0, 99]]                                                                                     |
+|113       |[[7.0, 186], [0.0, 145], [1.0, 2]]                                                                          |
+|114       |[[7.0, 134], [10.0, 1], [21.0, 1]]                                                                          |
+|115       |[[7.0, 1]]                                                                                                  |
+|116       |[[9.0, 3], [11.0, 1]]                                                                                       |
+|117       |[[7.0, 1214]]                                                                                               |
+|118       |[[7.0, 2041]]                                                                                               |
+|119       |[[7.0, 3]]                                                                                                  |
+|120       |[[7.0, 20], [13.0, 1]]                                                                                      |
+|121       |[[7.0, 347], [12.0, 69], [2.0, 3], [1.0, 2]]                                                                |
+|122       |[[7.0, 1682]]                                                                                               |
+|123       |[[0.0, 18]]                                                                                                 |
+|124       |[[0.0, 23]]                                                                                                 |
+|125       |[[7.0, 5001]]                                                                                               |
+|126       |[[0.0, 16], [7.0, 1]]                                                                                       |
+|127       |[[14.0, 4]]                                                                                                 |
+|128       |[[3.0, 42], [7.0, 1]]                                                                                       |
+|129       |[[0.0, 76], [3.0, 1], [1.0, 1]]                                                                             |
+|130       |[[7.0, 1]]                                                                                                  |
+|131       |[[4.0, 85], [3.0, 19], [5.0, 1], [7.0, 1]]                                                                  |
+|132       |[[7.0, 235], [0.0, 1], [1.0, 1], [12.0, 1]]                                                                 |
+|133       |[[7.0, 21]]                                                                                                 |
+|134       |[[7.0, 188], [0.0, 88], [1.0, 6], [5.0, 3], [3.0, 2], [4.0, 1]]                                             |
+|135       |[[7.0, 1]]                                                                                                  |
+|136       |[[7.0, 7159]]                                                                                               |
+|137       |[[7.0, 1], [6.0, 1]]                                                                                        |
+|138       |[[0.0, 17]]                                                                                                 |
+|139       |[[7.0, 2]]                                                                                                  |
+|140       |[[12.0, 228]]                                                                                               |
+|141       |[[7.0, 2669], [1.0, 12], [8.0, 3], [5.0, 2]]                                                                |
+|142       |[[0.0, 23]]                                                                                                 |
+|143       |[[5.0, 512], [7.0, 15], [19.0, 2], [21.0, 2], [8.0, 1]]                                                     |
+|144       |[[0.0, 17]]                                                                                                 |
+|145       |[[7.0, 86], [5.0, 12]]                                                                                      |
+|146       |[[21.0, 2], [11.0, 1]]                                                                                      |
+|147       |[[4.0, 518], [7.0, 19]]                                                                                     |
+|148       |[[7.0, 375]]                                                                                                |
+|149       |[[0.0, 19]]                                                                                                 |
++----------+------------------------------------------------------------------------------------------------------------+
+
+
+Test:
+
++----------+--------------------------------------------+
+|prediction|label_dist                                  |
++----------+--------------------------------------------+
+|0         |[[0.0, 4467]]                               |
+|1         |[[20.0, 28003], [7.0, 34], [12.0, 1]]       |
+|2         |[[7.0, 471]]                                |
+|3         |[[7.0, 179], [4.0, 6]]                      |
+|4         |[[7.0, 1657]]                               |
+|5         |[[0.0, 8], [3.0, 1]]                        |
+|6         |[[0.0, 1861], [3.0, 3], [12.0, 1]]          |
+|7         |[[7.0, 80], [1.0, 3]]                       |
+|8         |[[7.0, 8]]                                  |
+|9         |[[0.0, 11], [7.0, 5]]                       |
+|10        |[[0.0, 16]]                                 |
+|11        |[[0.0, 10]]                                 |
+|12        |[[0.0, 8]]                                  |
+|13        |[[0.0, 8]]                                  |
+|14        |[[7.0, 41]]                                 |
+|15        |[[7.0, 61], [5.0, 1]]                       |
+|16        |[[0.0, 14]]                                 |
+|18        |[[0.0, 8]]                                  |
+|20        |[[19.0, 1]]                                 |
+|21        |[[5.0, 30], [7.0, 3]]                       |
+|22        |[[15.0, 94]]                                |
+|23        |[[12.0, 71], [2.0, 9], [7.0, 1]]            |
+|24        |[[0.0, 9]]                                  |
+|25        |[[0.0, 6]]                                  |
+|26        |[[6.0, 3]]                                  |
+|27        |[[7.0, 7]]                                  |
+|28        |[[0.0, 7]]                                  |
+|29        |[[0.0, 9]]                                  |
+|30        |[[7.0, 53]]                                 |
+|32        |[[7.0, 2]]                                  |
+|33        |[[0.0, 14], [3.0, 1]]                       |
+|34        |[[0.0, 5]]                                  |
+|35        |[[0.0, 11]]                                 |
+|36        |[[0.0, 12]]                                 |
+|37        |[[0.0, 9]]                                  |
+|38        |[[0.0, 8], [12.0, 1]]                       |
+|41        |[[3.0, 62]]                                 |
+|42        |[[7.0, 1]]                                  |
+|43        |[[0.0, 10]]                                 |
+|44        |[[0.0, 7]]                                  |
+|45        |[[0.0, 2]]                                  |
+|46        |[[0.0, 12]]                                 |
+|47        |[[0.0, 15], [7.0, 12]]                      |
+|48        |[[17.0, 1]]                                 |
+|49        |[[7.0, 1]]                                  |
+|50        |[[0.0, 10]]                                 |
+|51        |[[0.0, 6]]                                  |
+|53        |[[0.0, 8]]                                  |
+|54        |[[0.0, 11]]                                 |
+|55        |[[7.0, 6]]                                  |
+|56        |[[0.0, 5]]                                  |
+|57        |[[12.0, 5], [7.0, 2]]                       |
+|59        |[[0.0, 14], [3.0, 1]]                       |
+|60        |[[7.0, 227]]                                |
+|61        |[[7.0, 743], [1.0, 14], [2.0, 3], [15.0, 1]]|
+|63        |[[0.0, 9]]                                  |
+|64        |[[0.0, 5]]                                  |
+|65        |[[0.0, 11]]                                 |
+|66        |[[3.0, 17], [1.0, 15]]                      |
+|67        |[[2.0, 6]]                                  |
+|68        |[[7.0, 19]]                                 |
+|69        |[[7.0, 22]]                                 |
+|70        |[[0.0, 12], [3.0, 2]]                       |
+|71        |[[0.0, 18]]                                 |
+|72        |[[0.0, 9]]                                  |
+|73        |[[0.0, 11]]                                 |
+|75        |[[7.0, 23]]                                 |
+|76        |[[7.0, 1]]                                  |
+|77        |[[13.0, 1]]                                 |
+|79        |[[0.0, 7]]                                  |
+|80        |[[0.0, 15]]                                 |
+|82        |[[0.0, 8], [7.0, 8]]                        |
+|83        |[[0.0, 11]]                                 |
+|84        |[[0.0, 10]]                                 |
+|85        |[[0.0, 8]]                                  |
+|86        |[[7.0, 23]]                                 |
+|87        |[[0.0, 14]]                                 |
+|88        |[[0.0, 22], [7.0, 8], [3.0, 1]]             |
+|89        |[[7.0, 274], [4.0, 34]]                     |
+|90        |[[7.0, 40]]                                 |
+|91        |[[0.0, 11]]                                 |
+|92        |[[7.0, 392], [0.0, 1]]                      |
+|94        |[[7.0, 2], [4.0, 1]]                        |
+|95        |[[0.0, 10]]                                 |
+|96        |[[7.0, 2121], [4.0, 86]]                    |
+|97        |[[7.0, 235], [5.0, 15]]                     |
+|98        |[[7.0, 3], [10.0, 1]]                       |
+|99        |[[7.0, 88], [0.0, 21]]                      |
+|101       |[[7.0, 264], [0.0, 1]]                      |
+|103       |[[0.0, 10]]                                 |
+|104       |[[0.0, 3671], [3.0, 2]]                     |
+|106       |[[0.0, 10]]                                 |
+|107       |[[7.0, 15], [0.0, 1]]                       |
+|108       |[[1.0, 126]]                                |
+|109       |[[7.0, 139]]                                |
+|110       |[[18.0, 28]]                                |
+|111       |[[0.0, 8]]                                  |
+|112       |[[7.0, 11], [0.0, 9]]                       |
+|113       |[[7.0, 21], [0.0, 15]]                      |
+|114       |[[7.0, 22]]                                 |
+|117       |[[7.0, 125]]                                |
+|118       |[[7.0, 230]]                                |
+|120       |[[7.0, 5]]                                  |
+|121       |[[7.0, 35], [12.0, 7]]                      |
+|122       |[[7.0, 193]]                                |
+|123       |[[0.0, 3]]                                  |
+|124       |[[0.0, 3]]                                  |
+|125       |[[7.0, 535]]                                |
+|128       |[[3.0, 7]]                                  |
+|129       |[[0.0, 10]]                                 |
+|131       |[[4.0, 6], [3.0, 1]]                        |
+|132       |[[7.0, 22]]                                 |
+|133       |[[7.0, 1]]                                  |
+|134       |[[7.0, 17], [0.0, 7], [1.0, 1]]             |
+|136       |[[7.0, 795]]                                |
+|138       |[[0.0, 1]]                                  |
+|140       |[[12.0, 25]]                                |
+|141       |[[7.0, 285], [1.0, 2]]                      |
+|142       |[[0.0, 1]]                                  |
+|143       |[[5.0, 50], [7.0, 3]]                       |
+|144       |[[0.0, 3]]                                  |
+|145       |[[7.0, 14], [5.0, 2]]                       |
+|147       |[[4.0, 65], [7.0, 3]]                       |
+|148       |[[7.0, 37]]                                 |
+|149       |[[0.0, 2]]                                  |
++----------+--------------------------------------------+
