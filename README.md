@@ -1,6 +1,6 @@
-# anomaly_detection_in_network_traffic
+## Anomaly Detection
 
-Anomaly Detection in Network Traffic
+### Anomaly Detection in the Network Traffic
 
  
 Techniques followed
