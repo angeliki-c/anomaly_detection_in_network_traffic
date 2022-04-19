@@ -10,35 +10,36 @@ Techniques followed
 		Reveals encoded information within the features of the dataset. Though the states of the encoding
 		hyperparameter k is prespecified and issued in the begining to the algorithm. 
 		
-		It doesn't necessarilly converge to a correct clustering of the examples. There is always the possibility
-		that it will settle to some locally optimal solution.
+		It doesn't necessarilly converge to a correct clustering of the examples. There is always the
+		possibility that it will settle to some locally optimal solution.
 		
 		The result of the clustering is not that interpretable.
 		
 		This method is not reliable in high-dimensional worlds.
 		
-		It exhibits parallelism and it is preferred in big data frameworks as it may be computed efficiently.
+		It exhibits parallelism and it is preferred in big data frameworks as it may be computed 
+		efficiently.
 
-		In this use case we use a variant off KMeans, K-means||, implemented by Spark, which doesn't assume
-		random choice of the initial centroids when the algorithm starts, but follows some criterions 
+		In this use case we use a variant off KMeans, K-means||, implemented by Spark, which doesn't 
+		assume random choice of the initial centroids when the algorithm starts, but follows some criterions 
 		in choosing appropriately the initial values of the centroids for improving the quality of clustering.
 		
  		Other unsupervised techniques (gaussian mixtures, lda etc) that aim at giving further structure to
-	  	the input dataset and highlight what might not constitute a regular (normal) set of input features can 
-	  	also be used. An extensive list of clustering techniques can be found at [1]
+	  	the input dataset and highlight what might not constitute a regular (normal) set of input features 
+		can also be used. An extensive list of clustering techniques can be found at [1]
 
   
 Data set
 	
-	The data set [2] that is going to be used in this analysis was built in the frame of the Third International
-	Knowledge Discovery and Data Mining Tools Competition, which was held in conjunction with KDD-99 The Fifth 
-	International Conference on Knowledge Discovery and Data Mining.
+	The data set [2] that is going to be used in this analysis was built in the frame of the Third Interna-
+	tional Knowledge Discovery and Data Mining Tools Competition, which was held in conjunction with KDD-99
+	The Fifth International Conference on Knowledge Discovery and Data Mining.
 	It consists of approximately 4.9 million connections over the Internet and 42 features, numerical and 
 	categorical, giving clues regarding each connection.
-	Although in some settings, configuring the cluster on standalone mode and with as many workers as the cores 
-	of the machine, along with repartioning appropriatly the data, the data analysis of the 4.9 million x 42 
-	data set may be feasible locally, there is a smaller version of the data set, in any case, composed of 
-	494021 records. 
+	Although in some settings, configuring the cluster on standalone mode and with as many workers as the 
+	cores of the machine, along with repartioning appropriatly the data, the data analysis of the 4.9 million
+	x 42 data set may be feasible locally, there is a smaller version of the data set, in any case, composed 
+	of 494021 records. 
 	
 
 Baseline
@@ -51,43 +52,44 @@ Baseline
 	
 Challenges
 	
-	Anomaly detection by its nature belongs to a category of problems, where we do not know beforehand what defines 
-	an 'anomaly' in a domain and don't have examples for how each and every possible anomaly may look like. Therefore,
-	the supervised learning methods in this problem category are not essentially useful in the long term.
-	Anomaly detection quite often finds application to fraud detection, network intrusion detection, servers or sensor
-	equipment's failure discovery and to others areas, yet quite often what may constitute an anomaly compared to the 
-	data seen thus far, may not be actually be a fraud or network intrusion, for example, or it may trully be a new 
-	type of fraud or network threat.
+	Anomaly detection by its nature belongs to a category of problems, where we do not know beforehand what 
+	defines an 'anomaly' in a domain and don't have examples for how each and every possible anomaly may look
+	like. Therefore, the supervised learning methods in this problem category are not essentially useful in the
+	long term.
+	Anomaly detection quite often finds application to fraud detection, network intrusion detection, servers or
+	sensor equipment's failure discovery and to others areas, yet quite often what may constitute an anomaly 
+	compared to the data seen thus far, may not be actually be a fraud or network intrusion, for example, or it
+	may trully be a new type of fraud or network threat.
     
 
 
 Training process
 
 	A 0.9 train and 0.1 test split has been first applied. 
-	Secondly, hyperparameter tuning has been performed on a dev set, composed of 0.1 of the train examples and using
-	the Silhouette metric as an indicative performance metric in clustering. The hyperparameters that we have chosen
-	to tune are : k, the distance measure used in KMeans and the maximum number of iterations that the algorithm 
-	should be run, until reaching convergence, for each choice of k. 
+	Secondly, hyperparameter tuning has been performed on a dev set, composed of 0.1 of the train examples and 
+	using the Silhouette metric as an indicative performance metric in clustering. The hyperparameters that we
+	have chosen to tune are : k, the distance measure used in KMeans and the maximum number of iterations that
+	the algorithm should be run, until reaching convergence, for each choice of k. 
 	Training of the model follows, using the best parameters emerged from the previous phase.
 	
 
 Evaluation
 
-	1. We evaluate the efficacy of KMeans in clustering examples consistently (using the Silhouette metric) against
-	   pca.
-	2. The effectiveness of clustering in discerning between the different groups of the data, first between normal 
-	   and anomalous and then between all the different classes of the training data. The results are compared to those
-	   produced by the application of lda as a baseline approach. The metric used is f1-score.
-	3. In additition we investigate the classification capability of K-Means on previously unseen data and compare against
-	   lda and a mlp classiffier, using F1-score as performance metric.	
+	1. We evaluate the efficacy of KMeans in clustering examples consistently (using the Silhouette metric)
+	   against lda.
+	2. The effectiveness of clustering in discerning between the different groups of the data, first between
+	   normal and anomalous and then between all the different classes of the training data. The results are 
+	   compared to those produced by the application of lda as a baseline approach. The metric used is f1-score.
+	3. In additition we investigate the classification capability of K-Means on previously unseen data and compare
+	   against lda and a mlp classiffier, using F1-score as performance metric.	
 	
 
 Performance Metrics
 
-	The Silhouette metric has been used in the evaluation, during hyperparameter tuning, which takes values within 
-	[-1, 1], with value 1 representing the situation where the examples belonging to each cluster present small 
-	distance or high affinity between each other, and the greatest distance from the examples of all the other 
-	clusters.
+	The Silhouette metric has been used in the evaluation, during hyperparameter tuning, which takes values 
+	within [-1, 1], with value 1 representing the situation where the examples belonging to each cluster present 
+	small distance or high affinity between each other, and the greatest distance from the examples of all the 
+	other clusters.
 	
 	The same metric has been applied on the test set for evaluating the quality of the clustering on unseen data.
 	
